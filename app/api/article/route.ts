@@ -1,6 +1,6 @@
 import { NextResponse,NextRequest } from "next/server";
 import {PrismaClient} from '@prisma/client';
-import { AtricleValidationSchema } from "@/app/utils/ValidationSchema";
+import { AtricleValidationSchema } from "@/utils/ValidationSchema";
 
 
 
@@ -48,3 +48,5 @@ export async function GET() {
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
 }
+
+
