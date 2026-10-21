@@ -1,7 +1,8 @@
 import {NextRequest,NextResponse} from 'next/server';
 import { registerSchema } from '@/utils/ValidationSchema';
 import {PrismaClient} from '@prisma/client';
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
+import { generateToken } from '@/utils/generateToken';
 
 
 const prisma = new PrismaClient()
@@ -30,6 +31,13 @@ export async function POST(request:NextRequest){
             password:hashpassword,
         }
     })
-    return NextResponse.json({user:newUser,message:'user created'},{status:201})
+   
+     const jwtPayload ={
+      id:newUser.id,
+      email:newUser.email,
+      username:newUser.username,
+    }
+    const token =generateToken(jwtPayload);
+    return NextResponse.json({user:newUser,message:'user created',token:token},{status:201})
 
 }

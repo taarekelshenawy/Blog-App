@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loginSchema } from '@/utils/ValidationSchema';
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';// تأكد أن هذا يوافق طريقة استيرادك لـ Prisma في مشروعك
+import { PrismaClient } from '@prisma/client';
+import { generateToken } from '@/utils/generateToken';
 
 
 const prisma = new PrismaClient();
@@ -45,12 +46,19 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
+    const jwtPayload ={
+      id:user.id,
+      email:user.email,
+      username:user.username,
+    }
+    const token =generateToken(jwtPayload);
 
    
     return NextResponse.json(
       { 
         message: 'تم تسجيل الدخول بنجاح',
-        user: { id: user.id, username:user.username, email: user.email }
+        user: { id: user.id, username:user.username, email: user.email },
+        token:token,
       },
       { status: 200 }
     );
