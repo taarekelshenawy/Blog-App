@@ -13,9 +13,6 @@ type PropsData={
 }
 
 
-
-
-
 export async function DELETE(request:NextRequest,props:PropsData){
     try{
          const params= (await props.params);
@@ -26,9 +23,6 @@ export async function DELETE(request:NextRequest,props:PropsData){
         return NextResponse.json({message:'there is not user found with this id'})
     }
     const token = request.headers.get('authToken') as string;
-    if(!token){
-        return NextResponse.json({message: "Unauthorized: No token provided"},{status:401})
-    }
     const decoded =jwt.verify(token,process.env.SECRET_KEY as string) as JwtPayload;
 
     if(!decoded){
