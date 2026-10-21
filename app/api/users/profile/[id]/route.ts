@@ -18,11 +18,12 @@ export async function DELETE(request:NextRequest,props:PropsData){
          const params= (await props.params);
          const id = Number(params.id);
     
-    const user =prisma.user.findUnique({where:{id:id}});
+    const user = await prisma.user.findUnique({where:{id:id}});
     if(!user){
         return NextResponse.json({message:'there is not user found with this id'})
     }
-    const token = request.headers.get('authToken') as string;
+    const token = request.cookies.get('token')?.value as string;
+    console.log(token)
     const decoded =jwt.verify(token,process.env.SECRET_KEY as string) as JwtPayload;
 
     if(!decoded){

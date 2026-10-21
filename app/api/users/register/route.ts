@@ -38,6 +38,26 @@ export async function POST(request:NextRequest){
       username:newUser.username,
     }
     const token =generateToken(jwtPayload);
-    return NextResponse.json({user:newUser,message:'user created',token:token},{status:201})
+const response = NextResponse.json(
+      { 
+        message: 'تم تسجيل الدخول بنجاح',
+        user: newUser,
+      },
+      { status: 200 }
+    );
+
+    
+    response.cookies.set({
+      name: 'token',          
+      value: token,         
+      httpOnly: true,         
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'strict',    
+      maxAge: 60 * 60,       
+      path: '/',             
+    });
+
+
+    return response;
 
 }

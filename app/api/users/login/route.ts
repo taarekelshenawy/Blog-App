@@ -54,15 +54,34 @@ export async function POST(request: NextRequest) {
     const token =generateToken(jwtPayload);
 
    
-    return NextResponse.json(
+    // return NextResponse.json(
+    //   { 
+    //     message: 'تم تسجيل الدخول بنجاح',
+    //     user: { id: user.id, username:user.username, email: user.email },
+    //     token:token,
+    //   },
+    //   { status: 200 }
+    // );
+const response = NextResponse.json(
       { 
         message: 'تم تسجيل الدخول بنجاح',
-        user: { id: user.id, username:user.username, email: user.email },
-        token:token,
+        user: { id: user.id, username: user.username, email: user.email },
       },
       { status: 200 }
     );
 
+   
+    response.cookies.set({
+      name: 'token',          
+      value: token,         
+      httpOnly: true,         
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'strict',    
+      maxAge: 60 * 60,       
+      path: '/',             
+    });
+
+    return response;
   } catch (error) {
     console.error('Login Error:', error);
     return NextResponse.json(
