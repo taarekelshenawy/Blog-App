@@ -54,14 +54,7 @@ export async function POST(request: NextRequest) {
     const token =generateToken(jwtPayload);
 
    
-    // return NextResponse.json(
-    //   { 
-    //     message: 'تم تسجيل الدخول بنجاح',
-    //     user: { id: user.id, username:user.username, email: user.email },
-    //     token:token,
-    //   },
-    //   { status: 200 }
-    // );
+   
 const response = NextResponse.json(
       { 
         message: 'تم تسجيل الدخول بنجاح',
