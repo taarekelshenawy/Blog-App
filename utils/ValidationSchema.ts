@@ -80,3 +80,9 @@ export const updateUserSchema = z.object({
       'يجب أن تحتوي كلمة المرور على حرف كبير، حرف صغير، ورقم على الأقل'
     ),
 });
+
+
+export const commentSchema =z.object({
+  content:z.string() .min(3, 'too short content'),
+  articleId:z.number()
+})

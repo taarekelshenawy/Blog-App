@@ -75,6 +75,7 @@ export async function GET(request:NextRequest,props:PropsData) {
             email:true,
             username:true,
             createdAt:true,
+            comments:true,
         
         }
     });
@@ -82,7 +83,11 @@ export async function GET(request:NextRequest,props:PropsData) {
         return NextResponse.json({message:"there is no user found"},{status:404})
     }
      const userFromToken = verifyToken(request);
-     if(userFromToken !== user.id){
+ if (userFromToken instanceof NextResponse) {
+        return userFromToken;
+    }
+   
+     if(userFromToken.id !== user.id){
         return NextResponse.json({message:'forbidden to get profile info'},{status:403})
      }
      return NextResponse.json({user:user})
@@ -126,7 +131,11 @@ export async function PUT(request:NextRequest,props:PropsData) {
     }
   
      const userFromToken = verifyToken(request);
-     if(userFromToken !== user.id){
+    if (userFromToken instanceof NextResponse) {
+        return userFromToken;
+    }
+   
+     if(userFromToken.id !== user.id){
         return NextResponse.json({message:'forbidden to get profile info'},{status:403})
      }
        const body  = await request.json();

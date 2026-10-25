@@ -15,6 +15,7 @@ model User {
   articles  Article[]
   comments  Comment[]
   createdAt DateTime  @default(now())
+  isAdmin Boolean @default(false)
 }
 
 model Article {
