@@ -8,6 +8,8 @@ const prisma = new PrismaClient();
 
 
 
+
+
 export async function POST(req: NextRequest) {
     try {
         const userfromToken =verifyToken(req);
@@ -74,3 +76,5 @@ export async function GET(req:NextRequest){
 
 
 }
+
+
