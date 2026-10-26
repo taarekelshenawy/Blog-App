@@ -38,10 +38,42 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function GET() {
+export async function GET(request:NextRequest) {
     try {
-        const newArticle = await prisma.article.findMany({});
-        return NextResponse.json({ newArticle }, { status: 200 });
+        const searchParams = request.nextUrl.searchParams;
+        const limit = Number(searchParams.get('limit') || 5);
+        const pageNumber = Number(searchParams.get("page") || 1);
+      const skip = (limit * (pageNumber - 1));
+
+    const [newArticle, totalCount] = await Promise.all([
+      prisma.article.findMany({
+        skip: skip,
+        take: limit,
+        orderBy: {
+          createdAt: 'desc', 
+        },
+      }),
+      prisma.article.count(), 
+    ]);
+
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    
+    return NextResponse.json(
+      {
+        data: newArticle,
+        pagination: {
+          currentPage: pageNumber,
+          limit: limit,
+          totalCount: totalCount,
+          totalPages: totalPages,
+          hasNextPage: pageNumber < totalPages,
+          hasPrevPage: pageNumber > 1,
+        },
+      },
+      { status: 200 }
+    );
 
     } catch{
 
