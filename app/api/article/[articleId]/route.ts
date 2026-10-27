@@ -29,7 +29,19 @@ export async function GET(req:NextRequest,props:propsData) {
     const articleId = Number(params.articleId);
     
     try {
-        const newArticle = await prisma.article.findUnique({where:{id:articleId}});
+        const newArticle = await prisma.article.findUnique({where:{id:articleId},
+           include:{
+            comments:{
+                include:{
+                    user:{
+                        select:{
+                            username:true,
+                        }
+                    }
+                }
+            }
+           }
+        });
         return NextResponse.json({ newArticle }, { status: 200 });
 
     } catch(error){

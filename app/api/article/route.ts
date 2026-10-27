@@ -1,5 +1,5 @@
 import { NextResponse,NextRequest } from "next/server";
-import {PrismaClient} from '@prisma/client';
+import {Prisma, PrismaClient} from '@prisma/client';
 import { AtricleValidationSchema } from "@/utils/ValidationSchema";
 
 
@@ -43,9 +43,31 @@ export async function GET(request:NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const limit = Number(searchParams.get('limit') || 5);
         const pageNumber = Number(searchParams.get("page") || 1);
+        const query = searchParams.get("q");
+
       const skip = (limit * (pageNumber - 1));
 
-    const [newArticle, totalCount] = await Promise.all([
+   
+   if(query){
+    const articles = await prisma.article.findMany({
+        where:{
+         title: {
+        contains: query,
+    
+    }
+        }
+    })
+
+      return NextResponse.json(
+      {
+        data: articles,
+     
+      },
+      { status: 200 }
+    );
+
+   }else{
+     const [newArticle, totalCount] = await Promise.all([
       prisma.article.findMany({
         skip: skip,
         take: limit,
@@ -56,11 +78,10 @@ export async function GET(request:NextRequest) {
       prisma.article.count(), 
     ]);
 
-
+    
     const totalPages = Math.ceil(totalCount / limit);
 
-    
-    return NextResponse.json(
+      return NextResponse.json(
       {
         data: newArticle,
         pagination: {
@@ -74,6 +95,15 @@ export async function GET(request:NextRequest) {
       },
       { status: 200 }
     );
+
+   }
+
+   
+
+
+
+    
+  
 
     } catch{
 
